@@ -1,0 +1,30 @@
+spring:
+  application:
+    name: mcp-discovery
+
+server:
+  port: 8761
+
+mcp-discovery:
+  registry:
+    lease-duration: PT90S        # evict after 90 s without heartbeat
+    renewal-interval: PT30S      # clients send a heartbeat every 30 s
+    eviction-interval: PT60S     # how often the eviction task runs
+    self-preservation: true
+    renewal-percent-threshold: 0.85
+  probe:
+    enabled: ${MCP_DISCOVERY_PROBE_ENABLED:false}  # actively call tools/list on instances
+    interval: PT5M
+    timeout: PT10S
+  security:
+    api-key: ${MCP_DISCOVERY_API_KEY:}            # empty = no authentication
+    protect-reads: false
+  dashboard:
+    enabled: true
+    path: /                       # web dashboard at http://localhost:8761/, like Eureka
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info

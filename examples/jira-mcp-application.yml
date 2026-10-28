@@ -1,0 +1,39 @@
+# application.yml of a Spring Boot MCP server registering in MCP Discovery.
+# Requires the dependency io.github.khaledamiri:mcp-discovery-client-spring-boot-starter.
+
+spring:
+  application:
+    name: jira-mcp            # used as server name when mcp-discovery.client.server-name is not set
+
+server:
+  port: 8080
+
+mcp-discovery:
+  client:
+    registry-url: ${MCP_DISCOVERY_URL:http://localhost:8761}
+    api-key: ${MCP_DISCOVERY_API_KEY:}
+
+    # How agents reach THIS server. Either give the full endpoint...
+    endpoint: ${MCP_DISCOVERY_ENDPOINT:}
+    # ...or let it be derived as <scheme>://<hostname>:<server port><path>
+    hostname: ${MCP_DISCOVERY_HOSTNAME:}     # empty = first non-loopback IP of the machine
+    path: /mcp
+
+    version: 1.0.0
+    metadata:
+      team: platform
+      env: ${ENV:dev}
+
+    # Optional when the registry probes servers (mcp-discovery.probe.enabled=true)
+    tools:
+      - name: search_issues
+        title: Search issues
+        description: Search Jira issues using JQL
+        input-schema:
+          type: object
+          properties:
+            jql:
+              type: string
+          required: [jql]
+      - name: create_issue
+        description: Create a new Jira issue

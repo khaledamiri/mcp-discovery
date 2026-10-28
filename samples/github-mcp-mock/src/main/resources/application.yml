@@ -1,0 +1,31 @@
+spring:
+  application:
+    name: github-mcp
+  # Spring AI MCP server: Streamable HTTP on /mcp. Without protocol: STREAMABLE,
+  # Spring AI would serve the legacy SSE transport and there would be no /mcp endpoint.
+  ai:
+    mcp:
+      server:
+        name: github-mcp
+        version: 1.0.0
+        type: SYNC
+        protocol: STREAMABLE
+        streamable-http:
+          mcp-endpoint: /mcp
+
+server:
+  port: ${PORT:8082}
+
+mcp-discovery:
+  client:
+    registry-url: ${MCP_DISCOVERY_URL:http://localhost:8761}
+    api-key: ${MCP_DISCOVERY_API_KEY:demo-key}
+    # Address advertised to agents: localhost when everything runs on one machine,
+    # the container name in Docker Compose.
+    hostname: ${MCP_HOSTNAME:localhost}
+    instance-id: ${MCP_INSTANCE_ID:github-mcp-${server.port}}
+    version: 1.0.0
+    metadata:
+      team: devtools
+      mock: "true"
+    # No tools declared here: the registry discovers them by calling tools/list (probing).

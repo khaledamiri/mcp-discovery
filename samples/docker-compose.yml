@@ -1,0 +1,58 @@
+# Full demo: a registry, two Jira instances, one GitHub instance, and an agent.
+#   docker compose -f samples/docker-compose.yml up --build -d
+#   open http://localhost:8761
+#   docker compose -f samples/docker-compose.yml run --rm demo-agent
+x-build: &build
+  context: ..
+  dockerfile: samples/Dockerfile
+
+x-mock-env: &mock-env
+  MCP_DISCOVERY_URL: http://registry:8761
+  MCP_DISCOVERY_API_KEY: ${MCP_DISCOVERY_API_KEY:-demo-key}
+
+services:
+  registry:
+    build: { <<: *build, args: { MODULE: registry } }
+    image: mcp-discovery-demo/registry
+    ports: ["8761:8761"]
+    environment:
+      MCP_DISCOVERY_API_KEY: ${MCP_DISCOVERY_API_KEY:-demo-key}
+
+  jira-mcp-1:
+    build: { <<: *build, args: { MODULE: jira-mcp-mock } }
+    image: mcp-discovery-demo/jira-mcp-mock
+    ports: ["8081:8081"]
+    environment:
+      <<: *mock-env
+      MCP_HOSTNAME: jira-mcp-1
+      MCP_INSTANCE_ID: jira-mcp-1
+    depends_on: [registry]
+
+  jira-mcp-2:
+    build: { <<: *build, args: { MODULE: jira-mcp-mock } }   # same image, built from cache
+    image: mcp-discovery-demo/jira-mcp-mock
+    ports: ["8083:8081"]
+    environment:
+      <<: *mock-env
+      MCP_HOSTNAME: jira-mcp-2
+      MCP_INSTANCE_ID: jira-mcp-2
+      MOCK_LATENCY: 300ms          # the second instance is a little slower
+    depends_on: [registry, jira-mcp-1]
+
+  github-mcp:
+    build: { <<: *build, args: { MODULE: github-mcp-mock } }
+    image: mcp-discovery-demo/github-mcp-mock
+    ports: ["8082:8082"]
+    environment:
+      <<: *mock-env
+      MCP_HOSTNAME: github-mcp
+      MCP_INSTANCE_ID: github-mcp-1
+    depends_on: [registry]
+
+  demo-agent:
+    build: { <<: *build, args: { MODULE: demo-agent } }
+    image: mcp-discovery-demo/demo-agent
+    environment:
+      MCP_DISCOVERY_URL: http://registry:8761
+    depends_on: [jira-mcp-1, jira-mcp-2, github-mcp]
+    profiles: [agent]                # started only with "docker compose run demo-agent"

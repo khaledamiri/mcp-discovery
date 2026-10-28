@@ -1,0 +1,15 @@
+spring:
+  application:
+    name: demo-agent
+  main:
+    web-application-type: none
+    banner-mode: off
+
+mcp-discovery:
+  client:
+    registry-url: ${MCP_DISCOVERY_URL:http://localhost:8761}
+    register: false          # the agent only searches, it is not an MCP server
+
+logging:
+  level:
+    root: WARN

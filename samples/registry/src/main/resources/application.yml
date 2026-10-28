@@ -1,0 +1,30 @@
+spring:
+  application:
+    name: demo-registry
+
+server:
+  port: 8761
+
+mcp-discovery:
+  registry:
+    lease-duration: PT90S
+    renewal-interval: PT30S
+    eviction-interval: PT15S      # evict faster than the default, to see it during the demo
+    # With only 3 instances, the default 85 % would treat one stopped instance as a network
+    # partition and suspend eviction. 50 % lets one instance be evicted, and still shows
+    # self-preservation when two of the three stop.
+    renewal-percent-threshold: 0.5
+  probe:
+    enabled: true                 # the registry reads tools/list from every mock server
+    interval: PT30S
+    timeout: PT5S
+  security:
+    api-key: ${MCP_DISCOVERY_API_KEY:demo-key}   # demo default only: never ship a default key
+  dashboard:
+    path: /
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <!-- Demo applications. Not part of the library build and never published.
+         Build the library first (mvn install at the repository root), then: mvn -f samples/pom.xml package -->
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>3.5.14</version>
+        <relativePath/>
+    </parent>
+
+    <groupId>io.github.khaledamiri.mcpdiscovery.samples</groupId>
+    <artifactId>samples</artifactId>
+    <version>0.1.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+    <name>MCP Discovery samples</name>
+
+    <modules>
+        <module>registry</module>
+        <module>jira-mcp-mock</module>
+        <module>github-mcp-mock</module>
+        <module>demo-agent</module>
+    </modules>
+
+    <properties>
+        <java.version>21</java.version>
+        <mcp-discovery.version>0.1.0-SNAPSHOT</mcp-discovery.version>
+        <!-- Spring AI 1.1.x is the line for Spring Boot 3.4/3.5 (2.x requires Spring Boot 4) -->
+        <spring-ai.version>1.1.8</spring-ai.version>
+        <maven.deploy.skip>true</maven.deploy.skip>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>io.github.khaledamiri</groupId>
+                <artifactId>mcp-discovery-spring-boot-starter</artifactId>
+                <version>${mcp-discovery.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.github.khaledamiri</groupId>
+                <artifactId>mcp-discovery-client-spring-boot-starter</artifactId>
+                <version>${mcp-discovery.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.ai</groupId>
+                <artifactId>spring-ai-bom</artifactId>
+                <version>${spring-ai.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+</project>

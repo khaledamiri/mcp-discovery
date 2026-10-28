@@ -1,0 +1,46 @@
+name: Bug report
+description: Something does not work as documented
+labels: [bug]
+body:
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: What did you do, what did you expect, and what happened instead?
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Steps to reproduce
+      description: Configuration (without secrets), requests sent, minimal code.
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: MCP Discovery version
+      placeholder: 0.1.0
+    validations:
+      required: true
+  - type: dropdown
+    id: module
+    attributes:
+      label: Module
+      options:
+        - mcp-discovery-core
+        - mcp-discovery-client
+        - mcp-discovery-spring-boot-starter
+        - mcp-discovery-client-spring-boot-starter
+        - mcp-discovery-server / Docker image
+  - type: input
+    id: environment
+    attributes:
+      label: Environment
+      placeholder: Java 21, Spring Boot 3.5.6, Linux
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs
+      description: Relevant log lines or stack trace (the first "Caused by" is usually enough).
+      render: text
